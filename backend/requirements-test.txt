@@ -1,0 +1,27 @@
+# Testing dependencies for AI Story Weaver Pro
+pytest>=7.0.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.0.0
+pytest-mock>=3.10.0
+httpx>=0.24.0
+faker>=15.0.0
+freezegun>=1.2.0
+
+# Test database setup
+pytest-postgresql>=4.0.0
+pytest-redis>=2.0.0
+
+# Mock and fixtures
+responses>=0.23.0
+pytest-factoryboy>=2.5.0
+
+# Code quality in tests
+pytest-flake8>=1.1.0
+pytest-black>=0.3.0
+pytest-isort>=3.0.0
+
+# Performance testing
+pytest-benchmark>=4.0.0
+
+# Async testing
+asynctest>=0.13.0
