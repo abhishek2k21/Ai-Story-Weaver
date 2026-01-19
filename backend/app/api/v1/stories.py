@@ -6,6 +6,9 @@ from typing import Dict, Any, Optional
 import logging
 import os
 from datetime import datetime
+from dotenv import load_dotenv
+
+load_dotenv()  # Load environment variables
 
 logger = logging.getLogger(__name__)
 
@@ -15,6 +18,8 @@ def check_api_keys_configured() -> bool:
     """Check if real API keys are configured (not placeholder values)."""
     openai_key = os.getenv("OPENAI_API_KEY", "")
     anthropic_key = os.getenv("ANTHROPIC_API_KEY", "")
+
+    print(f"OPENAI_API_KEY loaded: {openai_key[:10]}...")  # Print first 10 chars
 
     # Check if keys are configured and not placeholder values
     openai_valid = openai_key and not openai_key.startswith("your-") and len(openai_key) > 20
@@ -167,11 +172,25 @@ The forest had taught its lesson: anxiety may visit, but it doesn't define us. W
 async def create_outline(request: StoryRequest):
     """Generate just a story outline."""
     try:
-        outline = architect.plan_story(request.prompt, request.story_bible)
-        return {
-            "outline": outline.dict(),
-            "causal_analysis": outline.causal_chains
-        }
+        if USE_REAL_AGENTS and architect:
+            outline = architect.plan_story(request.prompt, request.story_bible)
+            return {
+                "outline": outline.dict(),
+                "causal_analysis": outline.causal_chains
+            }
+        else:
+            # Mock outline
+            return {
+                "outline": {
+                    "title": "Mock Story Outline",
+                    "genre": "therapeutic_fantasy",
+                    "main_characters": [{"name": "Protagonist", "role": "hero"}],
+                    "plot_summary": f"Mock outline for prompt: {request.prompt}",
+                    "key_scenes": [{"scene": "Introduction", "purpose": "Setup"}],
+                    "themes": ["mock"]
+                },
+                "causal_analysis": {"chains": []}
+            }
     except Exception as e:
         logger.error(f"Error creating outline: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Outline creation failed: {str(e)}")
@@ -180,9 +199,13 @@ async def create_outline(request: StoryRequest):
 async def revise_story(story_content: str, feedback: str):
     """Revise an existing story based on feedback."""
     try:
-        # Use Editor to revise
-        revised = scribe.revise_scene(story_content, feedback)
-        return {"revised_content": revised}
+        if USE_REAL_AGENTS and scribe:
+            # Use Editor to revise
+            revised = scribe.revise_scene(story_content, feedback)
+            return {"revised_content": revised}
+        else:
+            # Mock revision
+            return {"revised_content": f"Mock revised story based on feedback: {feedback}\n\nOriginal: {story_content[:100]}..."}
     except Exception as e:
         logger.error(f"Error revising story: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Story revision failed: {str(e)}")
@@ -199,7 +222,7 @@ async def health_check():
             "causality": "ready" if USE_REAL_AGENTS else "mock"
         },
         "ai_integration": "enabled" if USE_REAL_AGENTS else "disabled (configure API keys)",
-        "timestamp": datetime.now()
+        "timestamp": datetime.now().isoformat()
     }
 
 @router.post("/test-generate", response_model=StoryResponse)

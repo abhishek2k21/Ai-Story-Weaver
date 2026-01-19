@@ -13,7 +13,7 @@ import threading
 def start_server():
     """Start the server in a separate thread."""
     env = os.environ.copy()
-    env['PYTHONPATH'] = 'backend'
+    env['PYTHONPATH'] = os.getcwd()
 
     return subprocess.Popen([
         sys.executable, '-m', 'uvicorn', 'backend.app.main:app',

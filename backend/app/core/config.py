@@ -47,6 +47,7 @@ class Settings(BaseSettings):
 
     # CORS settings
     cors_origins: List[str] = ["http://localhost:3000", "http://localhost:8000"]
+    frontend_url: str = "http://localhost:3000"
 
     # Agent settings
     max_concurrent_stories: int = 10
