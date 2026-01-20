@@ -4,8 +4,8 @@ langchain
 langgraph
 dowhy
 nashpy
-torch
-tensorflow
+# torch (installed in Dockerfile for speed)
+tensorflow-cpu
 celery
 sqlalchemy
 alembic
@@ -24,7 +24,7 @@ huggingface-hub
 transformers
 diffusers
 deepface
-opencv-python
+opencv-python-headless
 elevenlabs
 moviepy
 openai
